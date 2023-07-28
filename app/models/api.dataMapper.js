@@ -1,8 +1,8 @@
 import client from './pg.client.js';
 import User from './user.dataMapper.js';
 
-const apiModels = {
+const apiModel = {
   user: new User(client)
 }
 
-export default apiModels;
+export default apiModel;

@@ -5,7 +5,7 @@
   "description": "Monster Hunter Haven API",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon index.js"
   },
   "author": "Pacotyse",
   "license": "ISC",
