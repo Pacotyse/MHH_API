@@ -1,7 +1,6 @@
 import express from "express";
 
-import register from "../middlewares/register.middleware.js";
-import login from "../middlewares/login.middleware.js";
+import user from "../middlewares/user.middleware.js";
 
 import apiController from "../controllers/api.controller.js";
 
@@ -23,7 +22,7 @@ router.use("/users", userRouter);
  * @returns {void}
  */
 
-router.route("/register").post(register, apiController.user.createOne);
+router.route("/register").post(user.register, apiController.user.createOne);
 
 /**
  * Route for authenticating users.
@@ -37,7 +36,7 @@ router.route("/register").post(register, apiController.user.createOne);
  * @returns {void}
  */
 
-router.route("/login").post(login, (req, res) => {
+router.route("/login").post(user.login, (req, res) => {
     res.send(true);
 });
 
