@@ -2,7 +2,6 @@ import bcrypt from "bcrypt";
 import apiModel from "../models/api.dataMapper.js";
 
 const user = {
-
   /**
    * Middleware for user registration.
    *
@@ -30,14 +29,14 @@ const user = {
           .json({ error: "Email and password are required." });
       }
 
-      // Format the email to lowercase before storing it and checkint if this email already exist in our database. 
-      const formattedEmail = email.toLowerCase();
-      const data = await apiModel.user.findByEmail(formattedEmail);
+      // Check if the email already exist in the database
+      const data = await apiModel.user.findByEmail(email);
       if (data) {
-        return res
-          .status(400)
-          .json({ error: "Email already used." });
+        return res.status(400).json({ error: "Email already used." });
       }
+
+      // Format the email to lowercase before storing it.
+      const formattedEmail = email.toLowerCase();
       req.body.email = formattedEmail;
 
       // Hash the password using bcrypt with the provided BCRYPT_ROUNDS.
