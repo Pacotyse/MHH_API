@@ -27,7 +27,8 @@ router.route("/register").post(user.register, apiController.user.createOne);
  *
  * @route POST /login
  * @middleware user.login - Compare data (email, password) provided by client and data from database.
- * @middleware token.generate - Generate token with data from database
+ * @middleware token.generate - Generate token with data from database.
+ * @middleware session.create - Create cookie session for storing JsonWebToken.
  * @param {Object} req - The HTTP request object.
  * @param {Object} res - The HTTP response object.
  * @returns {void}
