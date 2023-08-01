@@ -1,5 +1,6 @@
 import express from "express";
 import user from "../middlewares/user.middleware.js";
+import token from "../middlewares/token.middleware.js";
 import apiController from "../controllers/api.controller.js";
 import userRouter from "./user.router.js";
 
@@ -29,8 +30,8 @@ router.route("/register").post(user.register, apiController.user.createOne);
  * @param {Object} res - The HTTP response object.
  * @returns {void}
  */
-router.route("/login").post(user.login, (req, res) => {
-  res.send(true);
+router.route("/login").post(user.login, token.generate, (req, res) => {
+  res.json(req.body);
 });
 
 export default router;
