@@ -20,19 +20,30 @@ const token = {
   generate(req, res, next) {
     try {
       const { id, email, username } = req.body;
+
+      // Check if the required data is provided correctly
       if (!id || !email || !username) {
         return res.status(500).json({ error: "Failed to generate token" });
       }
+
+      // Generate the token
       const token = jwt.sign(
+        // Provide data to generate the token
         {
           id: id,
           email: email,
           username: username,
         },
+        // Define the secret password to encrypt the token
         process.env.JWT_SECRET,
+        // Define the token duration
         { expiresIn: parseInt(process.env.JWT_DURATION) }
       );
+
+      // Add the generated token to req.body
       req.body.token = token;
+
+      // Token generated, call the next middleware function.
       next();
     } catch (error) {
       return res.status(500).json({ error: "Failed to generate token" });
