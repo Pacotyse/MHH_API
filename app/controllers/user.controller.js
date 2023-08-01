@@ -20,18 +20,15 @@ const userController = {
       res.status(201).json(newUser);
   },
   async updateOne(req, res) {
-    const { id } = req.params;
-    const { username } = req.body;
-    // const { userId } = req;
-    const data = await apiModel.user.findByPk(id);
-    // if (data.id === userId) {
-    const updatedUser = await apiModel.user.update({
-      username,
-    });
-    res.status(201).json(updatedUser);
-    // } else {
-    //   res.status(403).json({ error: 'Unauthorized access.' });
-    // }
+    const user_id = req.params.id;
+    const token_id = req.user.id;
+    const inputData = req.body;
+    if (parseInt(user_id) === token_id) {
+      const updatedUser = await apiModel.user.update({ id: user_id, ...inputData });
+      res.status(201).json(updatedUser);
+    } else {
+      res.status(403).json({ error: 'Unauthorized access.' });
+    }
   },
   async deleteOne(req, res) {
     const user_id = req.params.id;
