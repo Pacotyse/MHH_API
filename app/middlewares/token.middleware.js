@@ -19,15 +19,14 @@ const token = {
    */
   generate(req, res, next) {
     try {
-      const { id, email, username } = req.body;
-
+      const { id } = req.params;
+      const { email, username } = req.body;
       // Check if the required data is provided correctly
       if (!id || !email || !username) {
         return res.status(500).json({ error: "Failed to generate token" });
       }
-
       // Generate the token
-      const token = jwt.sign(
+      const tokenValue = jwt.sign(
         // Provide data to generate the token
         {
           id: id,
@@ -39,10 +38,10 @@ const token = {
         // Define the token duration
         { expiresIn: parseInt(process.env.JWT_DURATION) }
       );
-
+      //   Add token's type to the token value
+      const token = `Bearer ${tokenValue}`;
       // Add the generated token to req.body
       req.body.token = token;
-
       // Token generated, call the next middleware function.
       next();
     } catch (error) {

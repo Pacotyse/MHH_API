@@ -97,6 +97,13 @@ const user = {
         const passwordMatch = await bcrypt.compare(password, data.password);
 
         if (passwordMatch) {
+          // Save user's ID in the parameter of the URL
+          req.params.id = data.id;
+          // Save user's data in the body of the request
+          req.body = {
+            email: data.email,
+            username: data.username
+          };
           // User authenticated, call the next middleware function.
           next();
         } else {
@@ -113,6 +120,7 @@ const user = {
       res.status(500).json({ error: "An internal error has occurred." });
     }
   },
+
 };
 
 export default user;
