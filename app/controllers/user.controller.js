@@ -35,13 +35,13 @@ const userController = {
   },
   async deleteOne(req, res) {
     const user_id = req.params.id;
-    // const { userId } = req;
-    // if (Number(user_id) === userId) {
+    const token_id = req.user.id;
+    if (parseInt(user_id) === token_id) {
     const deletedData = await apiModel.user.delete(user_id);
     res.status(201).json(deletedData);
-    // } else {
-    //   res.status(403).json({ error: 'Unauthorized access.' });
-    // }
+    } else {
+      res.status(403).json({ error: 'Unauthorized access.' });
+    }
   },
 };
 

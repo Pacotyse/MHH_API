@@ -47,7 +47,42 @@ const token = {
     } catch (error) {
       return res.status(500).json({ error: "Failed to generate token" });
     }
-  }
+  },
+  /**
+   * Middleware for JWT authentication.
+   *
+   * This middleware is responsible for authenticating users using JSON Web Tokens (JWT).
+   * It retrieves the JWT from the session, verifies its authenticity using the secret defined in `process.env.JWT_SECRET`,
+   * and if valid, decodes the token to extract user information, which is then added to the `req` object.
+   *
+   * @middleware
+   * @function authentication
+   * @param {Object} req - The HTTP request object.
+   * @param {string} req.session.jwt - The JSON Web Token (JWT) stored in the session.
+   * @param {Object} res - The HTTP response object.
+   * @param {Function} next - The next middleware function.
+   * @returns {void}
+   * @throws {Error} An error is thrown if the token is invalid or not provided.
+   */
+  authentication(req, res, next) {
+    try {
+      const token = req.session.jwt;
+      if (!token) {
+        return res
+          .status(401)
+          .json({ error: "Access denied. No token provided." });
+      }
+      const [bearer, tokenValue] = token.split(" ");
+      if (bearer !== "Bearer" || !tokenValue) {
+        return res.status(401).json({ error: "Invalid token format." });
+      }
+      const decoded = jwt.verify(tokenValue, process.env.JWT_SECRET);
+      req.user = decoded;
+      next();
+    } catch (error) {
+      return res.status(401).json({ error: 'Invalid token.' });
+    }
+  },
 };
 
 export default token;
