@@ -6,7 +6,7 @@ import user from "../middlewares/user.middleware.js";
 const router = express.Router();
 
 router.route("/:id")
-  .put(token.authentication, user.matching, apiController.user.updateOne)
-  .delete(token.authentication, apiController.user.deleteOne);
+  .put(token.authentication, user.check, user.matching, apiController.user.updateOne)
+  .delete(token.authentication, user.check, apiController.user.deleteOne);
 
 export default router;

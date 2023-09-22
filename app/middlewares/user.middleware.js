@@ -2,55 +2,55 @@ import bcrypt from "bcrypt";
 import apiModel from "../models/api.dataMapper.js";
 
 const user = {
-/**
- * Middleware for user matching.
- *
- * This middleware checks if there is any match in the database based on the provided data.
- * Both email and username must be unique in the database to pass this check.
- *
- * @middleware
- * @function matching
- * @param {Object} req - The HTTP request object.
- * @param {string} req.body.email - The email of the user to be registered.
- * @param {string} req.body.username - The username of the user to be registered.
- * @param {Object} res - The HTTP response object.
- * @param {Function} next - The next middleware function.
- * @returns {void}
- */
-async matching(req, res, next) {
-  try {
-    // Extract the email and username from the request body
-    const { email, username } = req.body;
+  /**
+   * Middleware for user matching.
+   *
+   * This middleware checks if there is any match in the database based on the provided data.
+   * Both email and username must be unique in the database to pass this check.
+   *
+   * @middleware
+   * @function matching
+   * @param {Object} req - The HTTP request object.
+   * @param {string} req.body.email - The email of the user to be registered.
+   * @param {string} req.body.username - The username of the user to be registered.
+   * @param {Object} res - The HTTP response object.
+   * @param {Function} next - The next middleware function.
+   * @returns {void}
+   */
+  async matching(req, res, next) {
+    try {
+      // Extract the email and username from the request body
+      const { email, username } = req.body;
 
-    // Check if an email is provided
-    if (email) {
-      // Query the database to find a user with the provided email
-      const data = await apiModel.user.findByEmail(email);
+      // Check if an email is provided
+      if (email) {
+        // Query the database to find a user with the provided email
+        const data = await apiModel.user.findByEmail(email);
 
-      // If a user with the same email exists, return a 403 Forbidden response
-      if (data) {
-        return res.status(403).json({ error: "Unauthorized access." });
+        // If a user with the same email exists, return a 403 Forbidden response
+        if (data) {
+          return res.status(403).json({ error: "Unauthorized access." });
+        }
       }
-    }
 
-    // Check if a username is provided
-    if (username) {
-      // Query the database to find a user with the provided username
-      const data = await apiModel.user.findBy("username", username);
+      // Check if a username is provided
+      if (username) {
+        // Query the database to find a user with the provided username
+        const data = await apiModel.user.findBy("username", username);
 
-      // If a user with the same username exists, return a 403 Forbidden response
-      if (data) {
-        return res.status(403).json({ error: "Unauthorized access." });
+        // If a user with the same username exists, return a 403 Forbidden response
+        if (data) {
+          return res.status(403).json({ error: "Unauthorized access." });
+        }
       }
-    }
 
-    // If no matching user is found, proceed to the next middleware
-    next();
-  } catch (error) {
-    // Handle any internal server errors with a 500 Internal Server Error response
-    res.status(500).json({ error: "Internal server error" });
-  }
-},
+      // If no matching user is found, proceed to the next middleware
+      next();
+    } catch (error) {
+      // Handle any internal server errors with a 500 Internal Server Error response
+      res.status(500).json({ error: "Internal server error" });
+    }
+  },
 
   /**
    * Middleware for user registration.
@@ -146,7 +146,7 @@ async matching(req, res, next) {
           // Save user's data in the body of the request
           req.body = {
             email: data.email,
-            username: data.username
+            username: data.username,
           };
           // User authenticated, call the next middleware function.
           next();
@@ -163,7 +163,41 @@ async matching(req, res, next) {
       res.status(500).json({ error: "An internal error has occurred." });
     }
   },
+  /**
+   * Middleware for checking user ID against token ID.
+   *
+   * This middleware checks if the 'user_id' in the URL parameters matches the 'user_id' from the JWT token.
+   * If the IDs do not match, it returns a 403 Forbidden response, indicating unauthorized access.
+   *
+   * @middleware
+   * @function check
+   * @param {Object} req - The HTTP request object.
+   * @param {Object} res - The HTTP response object.
+   * @param {Function} next - The next middleware function.
+   * @returns {void}
+   * @throws {Error} Throws an error if there's a problem with the user ID comparison or if there's an internal server error.
+   */
+  async check(req, res, next) {
+    try {
+      const user_id = req.params.id;
+      const token_id = req.user.id;
 
+      // Ensure both user_id values are integers for strict comparison
+      const userIdFromUrl = parseInt(user_id, 10);
+      const userIdFromToken = parseInt(token_id, 10);
+
+      // Check if the user making the request is the same as the user in the JWT
+      if (userIdFromUrl !== userIdFromToken) {
+        return res.status(403).json({ error: "Unauthorized access." });
+      }
+
+      // If user_id and token_id match, continue with the request
+      next();
+    } catch (error) {
+      // Handle any internal server errors with a 500 Internal Server Error response
+      res.status(500).json({ error: "Internal server error" });
+    }
+  },
 };
 
 export default user;

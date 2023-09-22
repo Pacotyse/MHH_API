@@ -72,12 +72,7 @@ const userController = {
   async updateOne(req, res) {
     try {
       const user_id = req.params.id;
-      const token_id = req.user.id;
       const inputData = req.body;
-
-      if (parseInt(user_id) !== token_id) {
-        return res.status(403).json({ error: "Unauthorized access." });
-      };
 
       if (inputData.id) {
         return res.status(403).json({ error: "Forbidden field" });
@@ -108,10 +103,6 @@ const userController = {
   async deleteOne(req, res) {
     try {
       const user_id = req.params.id;
-      const token_id = req.user.id;
-      if (parseInt(user_id) !== token_id) {
-        return res.status(403).json({ error: "Unauthorized access." });
-      };
       const deletedData = await apiModel.user.delete(user_id);
       res.status(204).json(deletedData);
     } catch (error) {
