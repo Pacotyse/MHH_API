@@ -5,21 +5,22 @@ const user = {
 /**
  * Middleware for user matching.
  *
- * This middleware checks if there is any match in the database based on the provided data. 
- * Email and Username must be unique in the database.
+ * This middleware checks if there is any match in the database based on the provided data.
+ * Both email and username must be unique in the database to pass this check.
  *
  * @middleware
  * @function matching
  * @param {Object} req - The HTTP request object.
  * @param {string} req.body.email - The email of the user to be registered.
+ * @param {string} req.body.username - The username of the user to be registered.
  * @param {Object} res - The HTTP response object.
  * @param {Function} next - The next middleware function.
  * @returns {void}
  */
 async matching(req, res, next) {
   try {
-    // Extract the email from the request body
-    const { email } = req.body;
+    // Extract the email and username from the request body
+    const { email, username } = req.body;
 
     // Check if an email is provided
     if (email) {
@@ -32,6 +33,17 @@ async matching(req, res, next) {
       }
     }
 
+    // Check if a username is provided
+    if (username) {
+      // Query the database to find a user with the provided username
+      const data = await apiModel.user.findBy("username", username);
+
+      // If a user with the same username exists, return a 403 Forbidden response
+      if (data) {
+        return res.status(403).json({ error: "Unauthorized access." });
+      }
+    }
+
     // If no matching user is found, proceed to the next middleware
     next();
   } catch (error) {
@@ -39,6 +51,7 @@ async matching(req, res, next) {
     res.status(500).json({ error: "Internal server error" });
   }
 },
+
   /**
    * Middleware for user registration.
    *
