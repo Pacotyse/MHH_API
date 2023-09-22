@@ -6,25 +6,36 @@ class CoreDatamapper {
   }
 
   /**
-   * Récupération par identifiant
-   * @param {number} id identifiant
-   * @returns {object} un enregistrement
-   */
-
-  async findByPk(id) {
+ * Retrieve a record by its primary key (id).
+ *
+ * @async
+ * @function findByPk
+ * @param {number} id - The primary key (id) of the record to retrieve.
+ * @returns {object|null} An object representing the retrieved record or null if no record is found.
+ * @throws {Error} Throws an error if there's a problem with the database query.
+ */
+async findByPk(id) {
+  try {
+    // Prepare the SQL query to retrieve a record by its primary key (id)
     const preparedQuery = {
       text: `SELECT * FROM "${this.tableName}" WHERE id = $1`,
       values: [id],
     };
 
+    // Execute the query
     const result = await this.client.query(preparedQuery);
 
+    // Check if a record was found
     if (!result.rows[0]) {
-      return null;
+      return null; // No record found
     }
 
-    return result.rows[0];
+    return result.rows[0]; // Return the retrieved record as an object
+  } catch (error) {
+    throw new Error("Database query error: " + error.message);
   }
+}
+
 
   /**
    * Find a record in the database table based on a specified field and its value.
@@ -59,28 +70,44 @@ class CoreDatamapper {
   }
 
   /**
-   * Permet de récupérer l'ensemble des enregistrement
-   * d'une table ou une liste d'enregistrement.
-   * @returns {object[]} une liste d'enregistrements
-   */
-
-  async findAll() {
+ * Retrieve all records from a table or a list of records.
+ *
+ * @async
+ * @function findAll
+ * @returns {object[]} An array containing a list of records.
+ * @throws {Error} Throws an error if there's a problem with the database query.
+ */
+async findAll() {
+  try {
+    // Execute an SQL query to retrieve all records from the specified table
     const result = await this.client.query(`SELECT * FROM "${this.tableName}"`);
 
+    // Return the list of records as an array of objects
     return result.rows;
+  } catch (error) {
+    throw new Error("Database query error: " + error.message);
   }
+}
 
-  /**
-   * Insertion de données dans la table
-   * @param {object} inputData données à insérer dans la table
-   * @returns {object} l'enregistrement créé
-   */
-  async create(inputData) {
+
+/**
+ * Insert data into the table.
+ *
+ * @async
+ * @function create
+ * @param {object} inputData - Data to be inserted into the table.
+ * @returns {object} The created record.
+ * @throws {Error} Throws an error if there's a problem with the database query.
+ */
+async create(inputData) {
+  try {
+    // Prepare the fields, placeholders, and values for the SQL query
     const fields = [];
     const placeholders = [];
     const values = [];
     let indexPlaceholder = 1;
 
+    // Iterate through the input data and build the query components
     Object.entries(inputData).forEach(([prop, value]) => {
       fields.push(`"${prop}"`);
       placeholders.push(`$${indexPlaceholder}`);
@@ -88,73 +115,105 @@ class CoreDatamapper {
       values.push(value);
     });
 
+    // Construct the SQL query for insertion
     const preparedQuery = {
       text: `
-              INSERT INTO "${this.tableName}"
-              (${fields})
-              VALUES (${placeholders})
-              RETURNING *
-            `,
+        INSERT INTO "${this.tableName}"
+        (${fields})
+        VALUES (${placeholders})
+        RETURNING *
+      `,
       values,
     };
 
+    // Execute the query and retrieve the created record
     const result = await this.client.query(preparedQuery);
     const row = result.rows[0];
 
+    // Return the created record as an object
     return row;
+  } catch (error) {
+    // Handle any database query errors with an informative message
+    throw new Error("Database query error: " + error.message);
   }
+}
 
-  /**
-   * Modification de données dans la table
-   * @param {object} param0 données à mettre à jour dans la table comprenant également
-   * l'identifiant de l'enregistrement
-   * @returns {object} l'enregistrement mis à jour
-   */
 
-  async update({ id, ...inputData }) {
+ /**
+ * Update data in the table.
+ *
+ * @async
+ * @function update
+ * @param {object} inputData - Data to be updated in the table, including the record's identifier.
+ * @returns {object} The updated record.
+ * @throws {Error} Throws an error if there's a problem with the database query.
+ */
+async update({ id, ...inputData }) {
+  try {
+    // Prepare fields, placeholders, and values for the SQL query
     const fieldsAndPlaceholders = [];
     let indexPlaceholder = 1;
     const values = [];
 
+    // Iterate through the input data and build the query components
     Object.entries(inputData).forEach(([prop, value]) => {
       fieldsAndPlaceholders.push(`"${prop}" = $${indexPlaceholder}`);
       indexPlaceholder += 1;
       values.push(value);
     });
 
+    // Add the record's identifier to the values array
     values.push(id);
 
+    // Construct the SQL query for updating the record
     const preparedQuery = {
       text: `
-              UPDATE "${this.tableName}" SET
-              ${fieldsAndPlaceholders},
-              updated_at = now()
-              WHERE id = $${indexPlaceholder}
-              RETURNING *
-            `,
+        UPDATE "${this.tableName}" SET
+        ${fieldsAndPlaceholders},
+        updated_at = now()
+        WHERE id = $${indexPlaceholder}
+        RETURNING *
+      `,
       values,
     };
 
+    // Execute the query and retrieve the updated record
     const result = await this.client.query(preparedQuery);
     const row = result.rows[0];
 
+    // Return the updated record as an object
     return row;
+  } catch (error) {
+    // Handle any database query errors with an informative message
+    throw new Error("Database query error: " + error.message);
   }
+}
 
   /**
-   * Suppression d'un enregistrement
-   * @param {number} id
-   * @returns {boolean} nombre d'enregistrement supprimés
-   */
-
-  async delete(id) {
+ * Delete a record.
+ *
+ * @async
+ * @function delete
+ * @param {number} id - The identifier of the record to delete.
+ * @returns {boolean} True if the record was successfully deleted, false otherwise.
+ * @throws {Error} Throws an error if there's a problem with the database query.
+ */
+async delete(id) {
+  try {
+    // Execute an SQL query to delete a record by its identifier (id)
     const result = await this.client.query(
       `DELETE FROM "${this.tableName}" WHERE id = $1`,
       [id]
     );
-    // !! cast un falsy en false
+
+    // Convert the result.rowCount to a boolean value: true if deleted, false otherwise
     return !!result.rowCount;
+  } catch (error) {
+    // Handle any database query errors with an informative message
+    throw new Error("Database query error: " + error.message);
   }
+}
+
 }
 
 export default CoreDatamapper;
