@@ -40,6 +40,7 @@ const userController = {
    */
   async createOne(req, res) {
     try {
+      console.log(req.body);
       const { email, password, username } = req.body;
       if (!email || !password || !username) {
         return res.status(400).json({ error: "Missing required fields." });
@@ -73,9 +74,15 @@ const userController = {
       const user_id = req.params.id;
       const token_id = req.user.id;
       const inputData = req.body;
+
       if (parseInt(user_id) !== token_id) {
         return res.status(403).json({ error: "Unauthorized access." });
       };
+
+      if (inputData.id) {
+        return res.status(403).json({ error: "Forbidden field" });
+      };
+      
       const updatedUser = await apiModel.user.update({
         id: user_id,
         ...inputData,

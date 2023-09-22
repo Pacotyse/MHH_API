@@ -20,7 +20,7 @@ router.use("/users", userRouter);
  * @throws {Error} An error may be thrown if encryption fails.
  * @returns {void}
  */
-router.route("/register").post(user.register, apiController.user.createOne);
+router.route("/register").post(user.matching, user.register, apiController.user.createOne);
 
 /**
  * Route for authenticating users.

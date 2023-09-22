@@ -2,6 +2,43 @@ import bcrypt from "bcrypt";
 import apiModel from "../models/api.dataMapper.js";
 
 const user = {
+/**
+ * Middleware for user matching.
+ *
+ * This middleware checks if there is any match in the database based on the provided data. 
+ * Email and Username must be unique in the database.
+ *
+ * @middleware
+ * @function matching
+ * @param {Object} req - The HTTP request object.
+ * @param {string} req.body.email - The email of the user to be registered.
+ * @param {Object} res - The HTTP response object.
+ * @param {Function} next - The next middleware function.
+ * @returns {void}
+ */
+async matching(req, res, next) {
+  try {
+    // Extract the email from the request body
+    const { email } = req.body;
+
+    // Check if an email is provided
+    if (email) {
+      // Query the database to find a user with the provided email
+      const data = await apiModel.user.findByEmail(email);
+
+      // If a user with the same email exists, return a 403 Forbidden response
+      if (data) {
+        return res.status(403).json({ error: "Unauthorized access." });
+      }
+    }
+
+    // If no matching user is found, proceed to the next middleware
+    next();
+  } catch (error) {
+    // Handle any internal server errors with a 500 Internal Server Error response
+    res.status(500).json({ error: "Internal server error" });
+  }
+},
   /**
    * Middleware for user registration.
    *
@@ -27,12 +64,6 @@ const user = {
         return res
           .status(400)
           .json({ error: "Email and password are required." });
-      }
-
-      // Check if the email already exist in the database
-      const data = await apiModel.user.findByEmail(email);
-      if (data) {
-        return res.status(400).json({ error: "Email already used." });
       }
 
       // Format the email to lowercase before storing it.
@@ -116,7 +147,6 @@ const user = {
       }
     } catch (error) {
       // Handle any internal error that occurs during the login process.
-      console.error("Error during login:", error);
       res.status(500).json({ error: "An internal error has occurred." });
     }
   },
