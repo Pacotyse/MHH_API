@@ -2,7 +2,7 @@ const session = {
   /**
    * Middleware for creating a session.
    *
-   * This middleware is responsible for creating a session for the user by saving the JWT (JSON Web Token)
+   * This middleware is responsible for creating a session for the user by saving the JSON Web Token (JWT)
    * provided in the request body to the 'req.session.jwt' property.
    *
    * @middleware
@@ -14,14 +14,17 @@ const session = {
    * @returns {void}
    */
   create(req, res, next) {
+    // Save the JWT from the request body to the session
     req.session.jwt = req.body.token;
+    // Continue to the next middleware
     next();
   },
+
   /**
    * Middleware for destroying a session.
    *
    * This middleware is responsible for destroying the session of the user.
-   * It removes all session data, including the JWT, from the request object.
+   * It removes all session data, including the JSON Web Token (JWT), from the request object.
    *
    * @middleware
    * @function destroy
@@ -31,7 +34,9 @@ const session = {
    * @returns {void}
    */
   destroy(req, res, next) {
+    // Destroy the session, removing all session data
     req.session.destroy();
+    // Continue to the next middleware
     next();
   },
 };
