@@ -70,13 +70,13 @@ const user = {
    */
   async register(req, res, next) {
     try {
-      const { email, password } = req.body;
+      const { email, password, username } = req.body;
 
       // Validate email and password existence.
-      if (!email || !password) {
+      if (!email || !password || !username) {
         return res
           .status(400)
-          .json({ error: "Email and password are required." });
+          .json({ error: "Email, password and username are required." });
       }
 
       // Format the email to lowercase before storing it.
