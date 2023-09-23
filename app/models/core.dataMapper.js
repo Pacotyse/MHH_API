@@ -37,16 +37,16 @@ class CoreDatamapper {
   }
 
   /**
-   * Find a record in the database table based on a specified field and its value.
+   * Find all records in the database table based on a specified field and its value.
    *
    * @async
-   * @function findBy
+   * @function findAllBy
    * @param {string} field - The name of the field to search for.
    * @param {any} value - The value to match against in the specified field.
    * @returns {Promise<Object|null>} A Promise that resolves with the found record as an object, or null if no record is found.
    * @throws {Error} Throws an error if there's a problem with the database query.
    */
-  async findBy(field, value) {
+  async findAllBy(field, value) {
     try {
       // Prepare the SQL query
       const preparedQuery = {

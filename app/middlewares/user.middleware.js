@@ -36,7 +36,7 @@ const user = {
       // Check if a username is provided
       if (username) {
         // Query the database to find a user with the provided username
-        const data = await apiModel.user.findBy("username", username);
+        const data = await apiModel.user.findAllBy("username", username);
 
         // If a user with the same username exists, return a 403 Forbidden response
         if (data) {
