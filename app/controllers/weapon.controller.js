@@ -13,8 +13,40 @@ const weaponController = {
    */
   async getAll(req, res) {
     try {
+      // Extract the limit value from the query parameters
+      const { limit } = req.query;
+
       // Retrieve all weapon data using the API model
-      const data = await apiModel.weapon.findAll();
+      const data = await apiModel.weapon.findAll(limit);
+
+      // Check if weapon data is found
+      if (!data) {
+        return res.status(404).json({ error: "Weapons not found." });
+      }
+
+      // Send the weapon data as a JSON response
+      res.json(data);
+    } catch (error) {
+      // Handle any internal server errors with a 500 Internal Server Error response
+      res.status(500).json({ error: "Internal server error" });
+    }
+  },
+
+  /**
+   * Get all weapons.
+   *
+   * @async
+   * @function getAll
+   * @param {Object} req - The HTTP request object.
+   * @param {Object} res - The HTTP response object.
+   * @returns {void}
+   * @throws {Error} Will throw an error if there's a server-side issue.
+   */
+  async getAllBy(req, res) {
+    try {
+      const inputData = req.query;
+
+      const data = await apiModel.weapon.getAllByParams(inputData);
 
       // Check if weapon data is found
       if (!data) {

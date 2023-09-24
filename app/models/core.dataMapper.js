@@ -73,15 +73,24 @@ class CoreDatamapper {
    *
    * @async
    * @function findAll
+   * @param {number} [limit] - Optional parameter to limit the number of records returned.
    * @returns {object[]} An array containing a list of records.
    * @throws {Error} Throws an error if there's a problem with the database query.
    */
-  async findAll() {
+  async findAll(limit) {
     try {
+      // Construct the SQL query for insertion
+      const preparedQuery = {
+        text: `SELECT * FROM "${this.tableName}"`,
+      };
+
+      // Check if a "limit" value is provided and add to the prepared query if it's true
+      if (limit) {
+        preparedQuery.text += ` LIMIT ${limit}`;
+      }
+
       // Execute an SQL query to retrieve all records from the specified table
-      const result = await this.client.query(
-        `SELECT * FROM "${this.tableName}"`
-      );
+      const result = await this.client.query(preparedQuery);
 
       // Return the list of records as an array of objects
       return result.rows;
