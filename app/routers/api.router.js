@@ -7,6 +7,7 @@ import userRouter from "./user.router.js";
 import loadoutRouter from "./loadout.router.js";
 import weaponRouter from "./weapon.router.js";
 import armorRouter from "./armor.router.js";
+import skillRouter from "./skill.router.js";
 
 const router = express.Router();
 
@@ -14,6 +15,7 @@ router.use("/users", userRouter);
 router.use("/loadouts", loadoutRouter);
 router.use("/weapons", weaponRouter);
 router.use("/armors", armorRouter);
+router.use("/skills", skillRouter);
 
 /**
  * Route for user registration.

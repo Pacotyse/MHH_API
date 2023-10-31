@@ -82,20 +82,18 @@ const loadoutController = {
       // Extract user_id from the token authentication
       const user_id = req.user.id;
 
-      // Extract name, description, and weapon from the request body
-      const { name, description, weapon } = req.body;
+      // Extract all inputData from the request body
+      const inputData = req.body;
 
       // Check if any of the required fields are missing
-      if (!name || !description || !weapon) {
+      if (!inputData.name || !inputData.description || !inputData.weapon) {
         return res.status(400).json({ error: "Missing required fields." });
       }
 
       // Create a new loadout using the API model
       const newLoadout = await apiModel.loadout.create({
         user_id,
-        name,
-        description,
-        weapon,
+        ...inputData
       });
 
       // Send the new loadout data as a JSON response with a 201 Created status code
