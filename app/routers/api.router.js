@@ -6,12 +6,14 @@ import apiController from "../controllers/api.controller.js";
 import userRouter from "./user.router.js";
 import loadoutRouter from "./loadout.router.js";
 import weaponRouter from "./weapon.router.js";
+import armorRouter from "./armor.router.js";
 
 const router = express.Router();
 
 router.use("/users", userRouter);
 router.use("/loadouts", loadoutRouter);
 router.use("/weapons", weaponRouter);
+router.use("/armors", armorRouter);
 
 /**
  * Route for user registration.
