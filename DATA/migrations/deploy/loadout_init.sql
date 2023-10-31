@@ -8,7 +8,7 @@ CREATE TABLE "loadout" (
     "name" TEXT NOT NULL,
     "description" TEXT,
     "weapon" JSON NOT NULL,
-    "created_at" TIMESTAMPTZ NOT NULL,
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT now(),
     "updated_at" TIMESTAMPTZ
 );
 
