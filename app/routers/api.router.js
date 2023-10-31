@@ -3,13 +3,15 @@ import user from "../middlewares/user.middleware.js";
 import token from "../middlewares/token.middleware.js";
 import session from "../middlewares/session.middleware.js";
 import apiController from "../controllers/api.controller.js";
-import weaponRouter from "./weapon.router.js";
 import userRouter from "./user.router.js";
+import loadoutRouter from "./loadout.router.js";
+import weaponRouter from "./weapon.router.js";
 
 const router = express.Router();
 
-router.use("/weapons", weaponRouter);
 router.use("/users", userRouter);
+router.use("/loadouts", loadoutRouter);
+router.use("/weapons", weaponRouter);
 
 /**
  * Route for user registration.
