@@ -6,3 +6,4 @@ weapon_init 2023-09-23T19:24:53Z System Administrator <root@macbook-pro-de-enzo.
 loadout_init 2023-10-30T19:29:37Z System Administrator <root@MacBook-Pro-de-Enzo.local> # Adding loadout's tables
 armor_init 2023-10-31T09:07:13Z System Administrator <root@MacBook-Pro-de-Enzo.local> # Initialize the armor table
 loadout_has_armors 2023-10-31T11:49:04Z System Administrator <root@MacBook-Pro-de-Enzo.local> # Adding armor pieces to a loadout
+skill_init 2023-10-31T12:46:05Z System Administrator <root@MacBook-Pro-de-Enzo.local> # Initialize skills with effects
