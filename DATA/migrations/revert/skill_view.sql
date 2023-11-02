@@ -2,6 +2,6 @@
 
 BEGIN;
 
-DROP VIEW IF EXISTS "skill_with_effect";
+DROP VIEW IF EXISTS "skills_with_effects";
 
 COMMIT;

@@ -23,13 +23,12 @@ SELECT
                 WHEN "skills_with_effects".id IS NULL THEN NULL
                 ELSE json_build_object(
 					'id', "skills_with_effects".id, 
+                    'color', "skills_with_effects".color,
 					'name', "skills_with_effects".name, 
 					'skill_description', "skills_with_effects".skill_description,
-					'color', "skills_with_effects".color,
 					'level', "skills_with_effects".level, 
 					'level_max', "skills_with_effects".level_max, 
-					'effect_description', "skills_with_effects".effect_description,
-					'modifier', "skills_with_effects".modifier
+					'effect_description', "skills_with_effects".effect_description
 				)
             END
         ),
