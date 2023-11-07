@@ -10,7 +10,7 @@ import CoreDatamapper from "./core.dataMapper.js";
  * @extends CoreDatamapper
  */
 class Armor extends CoreDatamapper {
-    tableName = "armor";
+    tableName = "armor_with_skill";
 }
 
 export default Armor;
