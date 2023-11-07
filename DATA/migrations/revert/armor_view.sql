@@ -2,6 +2,6 @@
 
 BEGIN;
 
-DROP VIEW IF EXISTS "armors_with_skills";
+DROP VIEW IF EXISTS "armor_with_skill";
 
 COMMIT;

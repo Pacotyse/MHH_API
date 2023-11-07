@@ -2,7 +2,7 @@
 
 BEGIN;
 
-CREATE VIEW "armors_with_skills" AS 
+CREATE VIEW "armor_with_skill" AS 
 SELECT 
 "armor".id,
 "armor".type,
