@@ -2,8 +2,8 @@
 
 BEGIN;
 
-CREATE VIEW "skills_with_effects" AS 
-SELECT 
+CREATE VIEW "skill_with_effect" AS
+SELECT
 "skill".id,
 "skill".color,
 "skill".name,
@@ -11,7 +11,7 @@ SELECT
 "effect".level,
 "skill".level_max,
 "effect".description AS "effect_description"
-FROM "skill" 
+FROM "skill"
 JOIN "effect" ON "skill".id = "effect".skill_id;
 
 COMMIT;
